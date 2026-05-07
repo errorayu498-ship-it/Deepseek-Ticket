@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= botName %> • Login</title>
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:'Rajdhani',sans-serif;background:#0a0a0a;min-height:100vh;display:flex;justify-content:center;align-items:center;background-image:radial-gradient(circle at 20% 50%,rgba(255,0,0,0.08) 0%,transparent 50%),radial-gradient(circle at 80% 50%,rgba(255,0,0,0.05) 0%,transparent 50%)}
+        .card{background:#111;border:1px solid #222;border-radius:16px;padding:50px 40px;width:440px;position:relative;box-shadow:0 20px 60px rgba(255,0,0,0.15)}
+        .card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#FF0000,#CC0000,#FF0000)}
+        .logo{text-align:center;margin-bottom:40px}.logo-icon{font-size:60px;animation:pulse 2s infinite}@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+        .logo-title{font-size:32px;font-weight:700;color:#FF0000;letter-spacing:4px}.logo-sub{font-size:14px;color:#666;letter-spacing:2px}
+        label{color:#999;font-size:12px;font-weight:600;letter-spacing:2px;display:block;margin-bottom:10px}
+        input{width:100%;padding:16px 20px;background:#0a0a0a;border:1px solid #333;border-radius:8px;color:#fff;font-size:16px;font-family:'Rajdhani',sans-serif;transition:.3s}
+        input:focus{outline:none;border-color:#FF0000;box-shadow:0 0 20px rgba(255,0,0,0.2)}
+        .btn{width:100%;padding:16px;background:linear-gradient(135deg,#FF0000,#CC0000);color:#fff;border:none;border-radius:8px;font-size:16px;font-weight:700;letter-spacing:3px;cursor:pointer;margin-top:15px;transition:.3s}
+        .btn:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(255,0,0,0.4)}
+        .error{background:rgba(255,0,0,0.1);border:1px solid rgba(255,0,0,0.3);color:#f44;padding:12px;border-radius:8px;margin-top:20px;text-align:center}
+        .footer{color:#444;text-align:center;margin-top:30px;font-size:12px;letter-spacing:2px}
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="logo"><div class="logo-icon">🎫</div><h1 class="logo-title"><%= botName %></h1><p class="logo-sub">Premium Management</p></div>
+        <form method="POST"><label>🔐 Portal Password</label><input type="password" name="password" placeholder="Enter password" required autofocus><button type="submit" class="btn">⚡ Access Portal</button></form>
+        <% if(error) { %><div class="error"><%= error %></div><% } %>
+        <p class="footer">🔴 Secure Access</p>
+    </div>
+</body>
+</html>
