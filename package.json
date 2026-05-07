@@ -1,0 +1,19 @@
+{
+  "name": "warrior-ticket-bot",
+  "version": "3.0.0",
+  "description": "Advanced Discord Ticket Bot with Template System & Web Portal",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js"
+  },
+  "dependencies": {
+    "discord.js": "^14.15.3",
+    "mongoose": "^8.4.0",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "express-session": "^1.18.0",
+    "body-parser": "^1.20.2",
+    "ejs": "^3.1.10"
+  }
+}
