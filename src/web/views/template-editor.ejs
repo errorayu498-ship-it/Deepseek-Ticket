@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= isNew ? 'Create' : 'Edit' %> Template • <%= botName %></title>
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0a0a0a;
+            --card: #111111;
+            --border: #222222;
+            --red: #FF0000;
+            --red-dark: #CC0000;
+            --text: #ffffff;
+            --sec: #999999;
+            --muted: #666666;
+            --input: #0f0f0f;
+            --success: #00ff00;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        /* ═════ SIDEBAR ═════ */
+        .sidebar {
+            width: 260px;
+            background: #0f0f0f;
+            border-right: 1px solid var(--border);
+            padding: 30px 0;
+            position: fixed;
+            height: 100vh;
+            z-index: 100;
+        }
+        
+        .sidebar-head {
+            padding: 0 25px 30px;
+            border-bottom: 1px solid var(--border);
+            text-align: center;
+        }
+        
+        .sidebar-icon { font-size: 45px; display: block; margin-bottom: 10px; }
+        .sidebar-title {
+            color: var(--red);
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: 3px;
+        }
+        
+        .nav { padding: 20px 15px; }
+        .nav a {
+            display: flex;
+            align-items: center;
+            padding: 13px 20px;
+            color: var(--sec);
+            text-decoration: none;
+            border-radius: 8px;
+            margin-bottom: 5px;
+            transition: all 0.3s;
+            font-weight: 600;
+            letter-spacing: 1px;
+            font-size: 15px;
+        }
+        .nav a:hover, .nav a.active {
+            background: rgba(255,0,0,0.1);
+            color: var(--red);
+        }
+        .nav-icon { margin-right: 12px; font-size: 18px; }
+        
+        /* ═════ MAIN ═════ */
+        .main {
+            margin-left: 260px;
+            padding: 40px;
+            flex: 1;
+            max-width: 1300px;
+        }
+        
+        .back-link {
+            color: var(--muted);
+            text-decoration: none;
+            font-size: 13px;
+            letter-spacing: 2px;
+            display: inline-block;
+            margin-bottom: 15px;
+            transition: color 0.3s;
+        }
+        .back-link:hover { color: var(--red); }
+        
+        .page-title {
+            font-size: 38px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            margin-bottom: 40px;
+        }
+        .page-title span { color: var(--red); }
+        
+        /* ═════ ALERTS ═════ */
+        .alert {
+            padding: 16px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            display: none;
+            font-size: 15px;
+        }
+        .alert-success {
+            background: rgba(0,255,0,0.1);
+            border: 1px solid rgba(0,255,0,0.3);
+            color: var(--success);
+        }
+        .alert-error {
+            background: rgba(255,0,0,0.1);
+            border: 1px solid rgba(255,0,0,0.3);
+            color: var(--red);
+        }
+        .alert.active { display: block; }
+        
+        /* ═════ CARDS ═════ */
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 30px;
+            margin-bottom: 25px;
+        }
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border);
+        }
+        .card-title {
+            font-size: 22px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: var(--red);
+        }
+        
+        /* ═════ FORM ═════ */
+        .form-group { margin-bottom: 20px; }
+        .form-label {
+            display: block;
+            color: var(--sec);
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 8px;
+        }
+        .form-input, .form-textarea, .form-select {
+            width: 100%;
+            padding: 13px 16px;
+            background: var(--input);
+            border: 1px solid #222;
+            border-radius: 8px;
+            color: var(--text);
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 15px;
+            transition: all 0.3s;
+        }
+        .form-input:focus, .form-textarea:focus, .form-select:focus {
+            outline: none;
+            border-color: var(--red);
+            box-shadow: 0 0 15px rgba(255,0,0,0.1);
+        }
+        .form-textarea { min-height: 120px; resize: vertical; }
+        .form-select[multiple] { min-height: 140px; }
+        
+        input[type="color"].form-input {
+            height: 50px;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 15px;
+        }
+        
+        /* ═════ BUTTONS ═════ */
+        .btn {
+            padding: 12px 28px;
+            border: none;
+            border-radius: 8px;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 15px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+        .btn-red {
+            background: linear-gradient(135deg, var(--red), var(--red-dark));
+            color: #fff;
+        }
+        .btn-red:hover {
+            box-shadow: 0 8px 25px rgba(255,0,0,0.3);
+            transform: translateY(-2px);
+        }
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--red);
+            color: var(--red);
+        }
+        .btn-outline:hover { background: rgba(255,0,0,0.1); }
+        
+        .btn-group { display: flex; gap: 12px; flex-wrap: wrap; }
+        
+        /* ═════ OPTION CARDS ═════ */
+        .option-card {
+            background: var(--input);
+            border: 1px solid #222;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 18px;
+            border-left: 3px solid var(--red);
+        }
+        .option-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 18px;
+        }
+        .option-number {
+            color: var(--red);
+            font-weight: 700;
+            font-size: 18px;
+            letter-spacing: 2px;
+        }
+        .btn-remove {
+            background: rgba(255,0,0,0.1);
+            color: var(--red);
+            border: 1px solid rgba(255,0,0,0.3);
+            padding: 7px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+        .btn-remove:hover { background: rgba(255,0,0,0.2); }
+        
+        .option-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        
+        /* ═════ PREVIEW ═════ */
+        .preview-box {
+            background: #2f3136;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+            border-left: 4px solid var(--red);
+        }
+        .preview-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--red);
+            margin-bottom: 8px;
+        }
+        .preview-desc {
+            color: #ccc;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        
+        @media (max-width: 768px) {
+            .sidebar { display: none; }
+            .main { margin-left: 0; padding: 20px; }
+            .form-grid { grid-template-columns: 1fr; }
+            .option-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ═════ SIDEBAR ═════ -->
+    <aside class="sidebar">
+        <div class="sidebar-head">
+            <span class="sidebar-icon">🎫</span>
+            <h2 class="sidebar-title"><%= botName %></h2>
+        </div>
+        <nav class="nav">
+            <a href="/"><span class="nav-icon">🏠</span> Dashboard</a>
+            <a href="/templates" class="active"><span class="nav-icon">📁</span> Templates</a>
+            <a href="/logout"><span class="nav-icon">🚪</span> Logout</a>
+        </nav>
+    </aside>
+
+    <!-- ═════ MAIN ═════ -->
+    <main class="main">
+        <a href="/templates" class="back-link">← Back to Templates</a>
+        <h1 class="page-title"><%= isNew ? '➕ Create' : '✏️ Edit' %> <span>Template</span></h1>
+
+        <div class="alert alert-success" id="alertSuccess"></div>
+        <div class="alert alert-error" id="alertError"></div>
+
+        <form id="templateForm">
+            <input type="hidden" name="templateId" value="<%= template?._id || '' %>">
+
+            <!-- ═══ BASIC INFO ═══ -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">📋 Template Info</h3>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Template Name *</label>
+                    <input type="text" name="name" class="form-input" 
+                           value="<%= template?.name || '' %>" 
+                           placeholder="My Awesome Template" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Description</label>
+                    <input type="text" name="description" class="form-input" 
+                           value="<%= template?.description || '' %>" 
+                           placeholder="Describe this template's purpose">
+                </div>
+            </div>
+
+            <!-- ═══ EMBED SETTINGS ═══ -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">📝 Embed Design</h3>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Embed Title</label>
+                    <input type="text" name="title" class="form-input" 
+                           value="<%= template?.embed?.title || '' %>" 
+                           placeholder="🎫 Ticket System">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Description (Markdown Supported)</label>
+                    <textarea name="embedDescription" class="form-textarea" 
+                              placeholder="Welcome! Select a category below..."><%= template?.embed?.description || '' %></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Footer Text</label>
+                    <input type="text" name="footer" class="form-input" 
+                           value="<%= template?.embed?.footer || '' %>" 
+                           placeholder="Ticket Bot • Premium">
+                </div>
+                
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label">Color</label>
+                        <input type="color" name="color" class="form-input" 
+                               value="<%= template?.embed?.color || '#FF0000' %>">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Thumbnail URL</label>
+                        <input type="url" name="thumbnail" class="form-input" 
+                               value="<%= template?.embed?.thumbnail || '' %>" 
+                               placeholder="https://...">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Image URL</label>
+                        <input type="url" name="image" class="form-input" 
+                               value="<%= template?.embed?.image || '' %>" 
+                               placeholder="https://...">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Icon URL</label>
+                    <input type="url" name="icon" class="form-input" 
+                           value="<%= template?.embed?.icon || '' %>" 
+                           placeholder="https://...">
+                </div>
+                
+                <!-- Live Preview -->
+                <div class="preview-box" id="livePreview">
+                    <div class="preview-title" id="previewTitle">
+                        <%= template?.embed?.title || '🎫 Ticket System' %>
+                    </div>
+                    <div class="preview-desc" id="previewDesc">
+                        <%= (template?.embed?.description || 'Select a category below...').substring(0, 300) %>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ═══ TICKET OPTIONS ═══ -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">🎫 Ticket Options</h3>
+                    <button type="button" class="btn btn-outline" onclick="addOption()">+ Add Option</button>
+                </div>
+                
+                <div id="optionsContainer">
+                    <% 
+                    const opts = template?.options || [];
+                    if (opts.length > 0) {
+                        opts.forEach((option, index) => { 
+                    %>
+                        <div class="option-card" id="option-<%= index %>">
+                            <div class="option-header">
+                                <span class="option-number">OPTION #<%= index + 1 %></span>
+                                <% if (opts.length > 1) { %>
+                                    <button type="button" class="btn-remove" onclick="removeOption(<%= index %>)">✕ Remove</button>
+                                <% } %>
+                            </div>
+                            
+                            <div class="option-grid">
+                                <div class="form-group">
+                                    <label class="form-label">Label</label>
+                                    <input type="text" name="option_<%= index %>_label" class="form-input" 
+                                           value="<%= option.label %>" placeholder="Support" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Emoji</label>
+                                    <input type="text" name="option_<%= index %>_emoji" class="form-input" 
+                                           value="<%= option.emoji || '🎫' %>">
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Description</label>
+                                <input type="text" name="option_<%= index %>_description" class="form-input" 
+                                       value="<%= option.description || '' %>" 
+                                       placeholder="Get support help">
+                            </div>
+                        </div>
+                    <% }); } else { %>
+                        <div class="option-card" id="option-0">
+                            <div class="option-header">
+                                <span class="option-number">OPTION #1</span>
+                            </div>
+                            <div class="option-grid">
+                                <div class="form-group">
+                                    <label class="form-label">Label</label>
+                                    <input type="text" name="option_0_label" class="form-input" 
+                                           placeholder="General Support" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Emoji</label>
+                                    <input type="text" name="option_0_emoji" class="form-input" value="💬">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Description</label>
+                                <input type="text" name="option_0_description" class="form-input" 
+                                       placeholder="Get general support">
+                            </div>
+                        </div>
+                    <% } %>
+                </div>
+                
+                <input type="hidden" name="optionCount" id="optionCount" 
+                       value="<%= opts.length > 0 ? opts.length : 1 %>">
+            </div>
+
+            <!-- ═══ DEFAULT ROLES ═══ -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">👥 Default Roles (Optional)</h3>
+                </div>
+                <p style="color: #999; margin-bottom: 15px; font-size: 14px;">
+                    These roles will be set when the template is applied to a server.
+                </p>
+                <div class="form-group">
+                    <label class="form-label">Admin Role IDs (Comma separated)</label>
+                    <input type="text" name="adminRoles" class="form-input" 
+                           value="<%= (template?.adminRoles || []).join(',') %>" 
+                           placeholder="role_id_1,role_id_2">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Support Role IDs (Comma separated)</label>
+                    <input type="text" name="supportRoles" class="form-input" 
+                           value="<%= (template?.supportRoles || []).join(',') %>" 
+                           placeholder="role_id_1,role_id_2">
+                </div>
+            </div>
+
+            <!-- ═══ LOG CHANNEL ═══ -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">📋 Default Log Channel (Optional)</h3>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Log Channel ID</label>
+                    <input type="text" name="logChannelId" class="form-input" 
+                           value="<%= template?.logChannelId || '' %>" 
+                           placeholder="channel_id">
+                </div>
+            </div>
+
+            <!-- ═══ SAVE BUTTON ═══ -->
+            <div class="card">
+                <div class="btn-group">
+                    <button type="submit" class="btn btn-red">
+                        💾 <%= isNew ? 'Create Template' : 'Update Template' %>
+                    </button>
+                    <a href="/templates" class="btn btn-outline">Cancel</a>
+                </div>
+            </div>
+        </form>
+    </main>
+
+    <script>
+        // ═════ ALERTS ═════
+        function showAlert(type, message) {
+            const alert = document.getElementById(type === 'success' ? 'alertSuccess' : 'alertError');
+            alert.textContent = message;
+            alert.classList.add('active');
+            setTimeout(() => alert.classList.remove('active'), 5000);
+        }
+
+        // ═════ LIVE PREVIEW ═════
+        function updatePreview() {
+            const title = document.querySelector('input[name="title"]').value || '🎫 Ticket System';
+            const desc = document.querySelector('textarea[name="embedDescription"]').value || 'Select a category below...';
+            const color = document.querySelector('input[name="color"]').value || '#FF0000';
+            
+            document.getElementById('previewTitle').textContent = title;
+            document.getElementById('previewDesc').innerHTML = desc.substring(0, 300).replace(/\n/g, '<br>');
+            document.querySelector('.preview-box').style.borderLeftColor = color;
+        }
+
+        document.querySelector('input[name="title"]').addEventListener('input', updatePreview);
+        document.querySelector('textarea[name="embedDescription"]').addEventListener('input', updatePreview);
+        document.querySelector('input[name="color"]').addEventListener('input', updatePreview);
+
+        // ═════ OPTIONS ═════
+        function getOptionCount() {
+            return document.querySelectorAll('.option-card').length;
+        }
+
+        function addOption() {
+            const container = document.getElementById('optionsContainer');
+            const index = getOptionCount();
+            
+            const html = `
+                <div class="option-card" id="option-${index}">
+                    <div class="option-header">
+                        <span class="option-number">OPTION #${index + 1}</span>
+                        <button type="button" class="btn-remove" onclick="removeOption(${index})">✕ Remove</button>
+                    </div>
+                    
+                    <div class="option-grid">
+                        <div class="form-group">
+                            <label class="form-label">Label</label>
+                            <input type="text" name="option_${index}_label" class="form-input" 
+                                   placeholder="Ticket Name" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Emoji</label>
+                            <input type="text" name="option_${index}_emoji" class="form-input" value="🎫">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Description</label>
+                        <input type="text" name="option_${index}_description" class="form-input" 
+                               placeholder="Describe this option">
+                    </div>
+                </div>
+            `;
+            
+            container.insertAdjacentHTML('beforeend', html);
+            document.getElementById('optionCount').value = getOptionCount();
+        }
+
+        function removeOption(index) {
+            const container = document.getElementById('optionsContainer');
+            if (container.querySelectorAll('.option-card').length <= 1) {
+                showAlert('error', '⚠️ Minimum 1 option required!');
+                return;
+            }
+            
+            const card = document.getElementById(`option-${index}`);
+            if (card) {
+                card.remove();
+                document.getElementById('optionCount').value = getOptionCount();
+            }
+        }
+
+        // ═════ SAVE ═════
+        document.getElementById('templateForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            formData.set('optionCount', getOptionCount());
+            
+            // Convert comma-separated role IDs to arrays
+            const adminRoles = formData.get('adminRoles') || '';
+            const supportRoles = formData.get('supportRoles') || '';
+            formData.set('adminRoles', adminRoles.split(',').map(r => r.trim()).filter(Boolean));
+            formData.set('supportRoles', supportRoles.split(',').map(r => r.trim()).filter(Boolean));
+            
+            try {
+                const res = await fetch('/templates/save', {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await res.json();
+                
+                if (data.success) {
+                    showAlert('success', '✅ ' + data.message);
+                    
+                    if (data.templateId && window.location.pathname.includes('/create')) {
+                        // Redirect to edit page for new templates
+                        setTimeout(() => {
+                            window.location.href = '/templates/' + data.templateId + '/edit';
+                        }, 1000);
+                    }
+                } else {
+                    showAlert('error', '❌ ' + data.message);
+                }
+            } catch (err) {
+                showAlert('error', 'Failed to save: ' + err.message);
+            }
+        });
+    </script>
+</body>
+</html>
