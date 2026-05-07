@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard • <%= botName %></title>
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root{--bg:#0a0a0a;--card:#111;--border:#222;--red:#FF0000;--text:#fff;--sec:#999}
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:'Rajdhani',sans-serif;background:var(--bg);color:var(--text);display:flex;min-height:100vh}
+        .sidebar{width:260px;background:#0f0f0f;border-right:1px solid var(--border);padding:30px 0;position:fixed;height:100vh}
+        .sidebar-head{padding:0 25px 30px;border-bottom:1px solid var(--border);text-align:center}
+        .sidebar-icon{font-size:40px}.sidebar-title{color:var(--red);font-size:20px;font-weight:700;letter-spacing:3px}
+        .nav{padding:20px 15px}.nav a{display:flex;align-items:center;padding:14px 20px;color:var(--sec);text-decoration:none;border-radius:8px;margin-bottom:5px;transition:.3s;font-weight:600;letter-spacing:1px}
+        .nav a:hover,.nav a.active{background:rgba(255,0,0,0.1);color:var(--red)}
+        .main{margin-left:260px;padding:40px;flex:1}
+        h1{font-size:36px;letter-spacing:2px;margin-bottom:35px}h1 span{color:var(--red)}
+        .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:20px;margin-bottom:40px}
+        .stat-card{background:var(--card);border:1px solid var(--border);padding:25px;border-radius:12px;text-align:center;transition:.3s}
+        .stat-card:hover{border-color:var(--red)}
+        .stat-num{font-size:42px;font-weight:700;color:var(--red)}.stat-label{color:var(--sec);font-size:14px;letter-spacing:2px;margin-top:5px}
+        .guilds{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px}
+        .guild-card{background:var(--card);border:1px solid var(--border);padding:25px;border-radius:12px;text-align:center;transition:.3s}
+        .guild-card:hover{transform:translateY(-5px);border-color:var(--red)}
+        .guild-card img{width:60px;height:60px;border-radius:50%;margin-bottom:10px}
+        .guild-card h3{margin:5px 0;font-size:18px}.guild-card p{color:var(--sec);font-size:13px}
+        .btn{display:inline-block;padding:10px 20px;background:var(--red);color:#fff;text-decoration:none;border-radius:6px;margin-top:10px;font-weight:600;letter-spacing:1px;transition:.3s}
+        .btn:hover{box-shadow:0 5px 20px rgba(255,0,0,0.3)}
+    </style>
+</head>
+<body>
+    <aside class="sidebar">
+        <div class="sidebar-head"><span class="sidebar-icon">🎫</span><h2 class="sidebar-title"><%= botName %></h2></div>
+        <nav class="nav">
+            <a href="/" class="active">🏠 Dashboard</a>
+            <a href="/templates">📁 Templates</a>
+            <a href="/logout">🚪 Logout</a>
+        </nav>
+    </aside>
+    <main class="main">
+        <h1>📊 <span>Dashboard</span></h1>
+        <div class="stats">
+            <div class="stat-card"><div class="stat-num"><%= stats.totalTickets %></div><div class="stat-label">Total Tickets</div></div>
+            <div class="stat-card"><div class="stat-num"><%= stats.openTickets %></div><div class="stat-label">Open</div></div>
+            <div class="stat-card"><div class="stat-num"><%= stats.closedTickets %></div><div class="stat-label">Closed</div></div>
+            <div class="stat-card"><div class="stat-num"><%= stats.totalServers %></div><div class="stat-label">Servers</div></div>
+            <div class="stat-card"><div class="stat-num"><%= stats.totalMembers %></div><div class="stat-label">Members</div></div>
+            <div class="stat-card"><div class="stat-num"><%= stats.totalTemplates %></div><div class="stat-label">Templates</div></div>
+        </div>
+        <h2 style="margin-bottom:20px;">🖥️ <span>Servers</span></h2>
+        <div class="guilds">
+            <% guilds.forEach(g => { %>
+                <div class="guild-card">
+                    <img src="<%= g.icon || 'https://cdn.discordapp.com/embed/avatars/0.png' %>" alt="icon">
+                    <h3><%= g.name %></h3><p>👥 <%= g.memberCount %> members</p>
+                    <a href="/guild/<%= g.id %>" class="btn">⚙️ Configure</a>
+                    <a href="/guild/<%= g.id %>/tickets" class="btn" style="background:transparent;border:1px solid var(--red);color:var(--red);margin-left:5px;">🎫 Tickets</a>
+                </div>
+            <% }) %>
+        </div>
+    </main>
+</body>
+</html>
